@@ -25,7 +25,7 @@ public class Join extends Operator {
     private TupleDesc td, td1, td2;
     private int field1,field2;
     private ArrayList<Tuple> tuples = new ArrayList<Tuple>();
-    private Iterator<Tuple> it;
+    private Iterator<Tuple> itrt;
     public Join(JoinPredicate p, DbIterator child1, DbIterator child2) {
         // some code goes here
         this.p=p;
@@ -84,9 +84,7 @@ public class Join extends Operator {
                 //innerloop
                 while(child2.hasNext()){
                     Tuple c2=child2.next();
-                    //check if they satisfies the JoinPredicate
-                    if (p.filter(c1,c2)){
-                        //construct new merged Tuple
+                    if (p.filter(c1,c2)){                    //check if they satisfies the JoinPredicate
                         Tuple mergedTp= Tuple.merge(c1,c2);
                         tuples.add(mergedTp);
                     }
@@ -94,7 +92,7 @@ public class Join extends Operator {
                 //innerloop rewind
                 child2.rewind();
         }
-        it=tuples.iterator();
+        itrt=tuples.iterator();
         super.open();
     }
 
@@ -103,12 +101,12 @@ public class Join extends Operator {
         child1.close();
         child2.close();
         super.close();
-        it=null;
+        itrt=null;
     }
 
     public void rewind() throws DbException, TransactionAbortedException {
         // some code goes here
-        it = tuples.iterator();
+        itrt = tuples.iterator();
     }
 
     /**
@@ -131,8 +129,8 @@ public class Join extends Operator {
      */
     protected Tuple fetchNext() throws TransactionAbortedException, DbException {
         // some code goes here
-        if (it != null && it.hasNext()) {
-            return it.next();
+        if (itrt != null && it.hasNext()) {
+            return itrt.next();
         } else
             return null;
     }

@@ -25,17 +25,17 @@ public class StringAggregator implements Aggregator {
 
     public StringAggregator(int gbfield, Type gbfieldtype, int afield, Op what) {
         // some code goes here
-	if (what != Op.COUNT) {
-		throw new IllegalArgumentException("op must be COUNT");
-	}
-	if (gbfield==Aggregator.NO_GROUPING) {
-		noGrouping=true;
-	}
-	gbField=gbfield;
-	gbFieldType=gbfieldtype;
-	aggregateField = afield;
-	op = what;
-	groups = new HashMap<Field, Integer>();
+		if (what != Op.COUNT) {
+			throw new IllegalArgumentException("op must be COUNT");
+		}
+		if (gbfield==Aggregator.NO_GROUPING) {
+			noGrouping=true;
+		}
+		gbField=gbfield;
+		gbFieldType=gbfieldtype;
+		aggregateField = afield;
+		op = what;
+		groups = new HashMap<Field, Integer>();
     }
 
     /**
@@ -44,29 +44,29 @@ public class StringAggregator implements Aggregator {
      */
     public void mergeTupleIntoGroup(Tuple tup) {
         // some code goes here
-	Field key;//tup's goupby field
-	int currentAggregateValue;//current agg value for the key
-	fieldName=tup.getTupleDesc().getFieldName(aggregateField);
-	//find Field Key
-	if (noGrouping) {
-		key = new IntField(Aggregator.NO_GROUPING);
-	} else {
-		key = tup.getField(gbField);
-		groupFieldName=tup.getTupleDesc().getFieldName(gbField);
-
-	}	
+		Field key;
+		int currentAggregateValue;//current agg value for the key
+		fieldName=tup.getTupleDesc().getFieldName(aggregateField);
+		//find Field Key
+		if (noGrouping) {
+			key = new IntField(Aggregator.NO_GROUPING);
+		} 
+		else {
+			key = tup.getField(gbField);
+			groupFieldName=tup.getTupleDesc().getFieldName(gbField);
+		}
 	
 
-	// find the current currentAggregateValue:
-	if (groups.containsKey(key)) {
+		// find the current currentAggregateValue:
+		if (groups.containsKey(key)) {
+			currentAggregateValue = groups.get(key);
+		} else {//groups does not yet contain this key
+				groups.put(key, 0);
+		}
 		currentAggregateValue = groups.get(key);
-	} else {//groups does not yet contain this key
-			groups.put(key, 0);
-	}
-	currentAggregateValue = groups.get(key);
 
-		currentAggregateValue++;
-		groups.put(key, currentAggregateValue);
+			currentAggregateValue++;
+			groups.put(key, currentAggregateValue);
     }
 
 public TupleDesc getTupleDesc() {
