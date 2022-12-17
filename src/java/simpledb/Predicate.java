@@ -89,9 +89,6 @@ public class Predicate implements Serializable {
         return this.op;
     }
     
-    /**
-     * @return the operand
-     */
     public Field getOperand()
     {
         // some code goes here
