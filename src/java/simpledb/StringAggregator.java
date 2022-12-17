@@ -99,7 +99,7 @@ public TupleDesc getTupleDesc() {
      *   grouping. The aggregateVal is determined by the type of
      *   aggregate specified in the constructor.
      */
-    public DbIterator iterator() {
+public DbIterator iterator() {
         // some code goes here
 	//from Aggregator.java, use TupleIterator.java
 	ArrayList<Tuple> tuples = new ArrayList<Tuple>();
