@@ -116,10 +116,6 @@ public class Predicate implements Serializable {
         else return false;
     }
 
-    /**
-     * Returns something useful, like "f = field_id op = op_string operand =
-     * operand_string
-     */
     public String toString() {
         // some code goes here
         return "f = " + field + "op = " + op.toString() + "operand= " + operand.toString();
