@@ -105,7 +105,7 @@ public class HeapFile implements DbFile {
      */
     public int numPages() {
         // some code goes here
-        return 0;
+        return (int)(f.length() / BufferPool.PAGE_SIZE);
     }
 
     // see DbFile.java for javadocs
@@ -118,7 +118,6 @@ public class HeapFile implements DbFile {
         int numPages = numPages();
         boolean pageFull = true;
         int i = 0;
-        //文件里的页不为0，返回受到影响的page
         for (; i < numPages; i++) {
             PageId pageId = new HeapPageId(getId(), i);
             HeapPage page = (HeapPage)Database.getBufferPool().getPage(tid, pageId, Permissions.READ_WRITE);
