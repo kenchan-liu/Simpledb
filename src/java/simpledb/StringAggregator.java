@@ -116,7 +116,6 @@ public DbIterator iterator() {
 	} else {
 		for (Field key : groups.keySet()){
 			int value = groups.get(key);
-
 			
 			Tuple tuple = new Tuple(td);
 			tuple.setField(0, key);

@@ -38,24 +38,24 @@ public class Delete extends Operator {
 
     public TupleDesc getTupleDesc() {
         // some code goes here
-	return td;
+	    return td;
     }
 
     public void open() throws DbException, TransactionAbortedException {
         // some code goes here
-	child.open();
-	super.open();
+        child.open();
+        super.open();
     }
 
     public void close() {
         // some code goes here
-	child.close();
-	super.close();
+        child.close();
+        super.close();
     }
 
     public void rewind() throws DbException, TransactionAbortedException {
         // some code goes here
-	child.rewind();
+	    child.rewind();
     }
 
     /**

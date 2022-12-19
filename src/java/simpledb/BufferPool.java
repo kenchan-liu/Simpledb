@@ -22,6 +22,7 @@ public class BufferPool {
     private int numPages;
     private HashMap<PageId,Page> pageBuffers;
     private int MAX_CAPACITY;
+    private LRUCACHE<PageId,Page> lruPagesPool;
 
     /**
      * Creates a BufferPool that caches up to numPages pages.
@@ -33,6 +34,8 @@ public class BufferPool {
         this.numPages = numPages;
         this.MAX_CAPACITY = numPages;
         pageBuffers = new HashMap<PageId,Page>(MAX_CAPACITY);
+        lruPagesPool = new LRUCACHE<>(PAGES_NUM);
+
 
     }
 
@@ -128,26 +131,31 @@ public class BufferPool {
     public void insertTuple(TransactionId tid, int tableId, Tuple t)
         throws DbException, IOException, TransactionAbortedException {
         // some code goes here
-        // not necessary for proj1
+        DbFile file = Database.getCatalog().getDbFile(tableId);
+        ArrayList<Page> affectPages = file.insertTuple(tid, t);
+
+        for (int i = 0; i < affectPages.size(); i++){
+            file.writePage(affectPages.get(i));
+        }
     }
 
     /**
-     * Remove the specified tuple from the buffer pool.
-     * Will acquire a write lock on the page the tuple is removed from. May block if
-     * the lock cannot be acquired.
+     * Remove the specified tuple from the buffer pool. Will acquire a write lock on
+     * the page the tuple is removed from. May block if the lock cannot be acquired.
      *
-     * Marks any pages that were dirtied by the operation as dirty by calling
-     * their markDirty bit.  Does not need to update cached versions of any pages that have 
-     * been dirtied, as it is not possible that a new page was created during the deletion
-     * (note difference from addTuple).
+     * Marks any pages that were dirtied by the operation as dirty by calling their
+     * markDirty bit. Does not need to update cached versions of any pages that have
+     * been dirtied, as it is not possible that a new page was created during the
+     * deletion (note difference from addTuple).
      *
      * @param tid the transaction adding the tuple.
-     * @param t the tuple to add
+     * @param t   the tuple to add
+     * @throws IOException
      */
-    public  void deleteTuple(TransactionId tid, Tuple t)
-        throws DbException, TransactionAbortedException {
-        // some code goes here
-        // not necessary for proj1
+    public void deleteTuple(TransactionId tid, Tuple t) throws DbException, TransactionAbortedException, IOException {
+        DbFile file = Database.getCatalog().getDbFile(t.getRecordId().getPageId().getTableId());
+        Page affectPage = file.deleteTuple(tid, t);
+
     }
 
     /**
@@ -178,6 +186,10 @@ public class BufferPool {
     private synchronized  void flushPage(PageId pid) throws IOException {
         // some code goes here
         // not necessary for proj1
+        Iterator<Page> it = lruPagesPool.iterator();
+        while (it.hasNext()) {
+            flushPage(it.next());
+        }
     }
 
     /** Write all pages of the specified transaction to disk.

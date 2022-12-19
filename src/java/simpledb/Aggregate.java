@@ -71,8 +71,8 @@ public class Aggregate extends Operator {
      *         {@link simpledb.Aggregator#NO_GROUPING}
      * */
     public int groupField() {
-	// some code goes here
-	return gField;
+        // some code goes here
+        return gField;
     }
 
     /**
@@ -93,8 +93,8 @@ public class Aggregate extends Operator {
      * @return the aggregate field
      * */
     public int aggregateField() {
-	// some code goes here
-	return aField;
+        // some code goes here
+        return aField;
     }
 
     /**
@@ -102,8 +102,8 @@ public class Aggregate extends Operator {
      *         tuples
      * */
     public String aggregateFieldName() {
-	// some code goes here
-	return child.getTupleDesc().getFieldName(aField);
+        // some code goes here
+        return child.getTupleDesc().getFieldName(aField);
     }
 
     /**
@@ -111,7 +111,7 @@ public class Aggregate extends Operator {
      * */
     public Aggregator.Op aggregateOp() {
 	// some code goes here
-	return op;
+        return op;
     }
 
     public static String nameOfAggregatorOp(Aggregator.Op aop) {
