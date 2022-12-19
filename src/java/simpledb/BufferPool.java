@@ -189,11 +189,10 @@ public class BufferPool {
      */
     private synchronized  void flushPage(PageId pid) throws IOException {
         // some code goes here
-        // not necessary for proj1
-        Iterator<Page> it = lruPagesPool.iterator();
-        while (it.hasNext()) {
-            flushPage(it.next());
-        }
+        HeapPage dirty_page = (HeapPage) page;
+        HeapFile table = (HeapFile) Database.getCatalog().getDbFile(page.getId().getTableId());
+        table.writePage(dirty_page);
+        dirty_page.markDirty(false, null);
     }
 
     /** Write all pages of the specified transaction to disk.
