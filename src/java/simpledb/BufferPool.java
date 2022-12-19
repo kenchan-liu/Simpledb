@@ -166,6 +166,10 @@ public class BufferPool {
     public synchronized void flushAllPages() throws IOException {
         // some code goes here
         // not necessary for proj1
+        Iterator<Page> it = lruPagesPool.iterator();
+        while (it.hasNext()) {
+            flushPage(it.next());
+        }
 
     }
 
