@@ -44,18 +44,17 @@ public class LRUCACHE<K,V> {
     }
 
     /**
-     * 把节点插入到表头作为第一个结点(在头结点之后)
      * @param ruNode  the recently used Node
      */
-    private void linkFirst(Node ruNode) {
+    private void linkFirst(Node ru_Node) {
         Node first= this.head.next;
-        this.head.next=ruNode;
-        ruNode.front= this.head;
-        ruNode.next=first;
+        this.head.next=ru_Node;
+        ru_Node.front= this.head;
+        ru_Node.next=first;
         if (first == null) {
-            tail = ruNode;
+            tail = ru_Node;
         } else {
-            first.front=ruNode;
+            first.front=ru_Node;
         }
     }
 
@@ -119,16 +118,6 @@ public class LRUCACHE<K,V> {
     public boolean isCached(K key) {
         return cachedEntries.containsKey(key);
     }
-
-    private void displayCache() {
-        //用于测试的
-        Node n=head;
-        while ((n = n.next) != null) {
-            System.out.print(n.value+", ");
-        }
-        System.out.println();
-    }
-
     /**
      *
      * @return 当前缓存的所有value
