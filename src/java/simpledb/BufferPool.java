@@ -20,7 +20,6 @@ public class BufferPool {
     constructor instead. */
     public static final int DEFAULT_PAGES = 50;
     private int numPages;
-    private HashMap<PageId,Page> pageBuffers;
     private int MAX_CAPACITY;
     private LRUCACHE<PageId,Page> lruPagesPool;
 
@@ -33,7 +32,6 @@ public class BufferPool {
         // some code goes here
         this.numPages = numPages;
         this.MAX_CAPACITY = numPages;
-        pageBuffers = new HashMap<PageId,Page>(MAX_CAPACITY);
         lruPagesPool = new LRUCACHE<>(PAGES_NUM);
 
 
@@ -57,17 +55,21 @@ public class BufferPool {
     public  Page getPage(TransactionId tid, PageId pid, Permissions perm)
         throws TransactionAbortedException, DbException {
         // some code goes here
-        HeapFile file = (HeapFile)Database.getCatalog().getDbFile(pid.getTableId());
-        Page pageRead = (HeapPage)file.readPage(pid);
-
-        if (pageBuffers.size() == MAX_CAPACITY){
-            throw new DbException("can't reach");
-        }else{
-            pageBuffers.put(pid,pageRead);
+        HeapPage page = (HeapPage) lruPagesPool.get(pid);
+        if (page != null) {
+            return page;
         }
-
-
-        return pageRead;
+        HeapFile table = (HeapFile) Database.getCatalog().getDbFile(pid.getTableId());
+        HeapPage newPage = (HeapPage) table.readPage(pid);
+        Page removedPage = lruPagesPool.put(pid, newPage);
+        if (removedPage != null) {
+            try {
+                flushPage(removedPage);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return newPage;
     }
 
     /**
